@@ -25,6 +25,11 @@ public class Collections {
 	    
 		l.remove(2);
 		x.remove(2);
+		Iterator it = l.iterator();
+		
+		while (it.hasNext()) {
+			System.err.println(it.next());
+		}
 		
 	    System.out.println(l.toString());  
 	    System.out.println(l.size());
@@ -37,7 +42,6 @@ public class Collections {
 	    System.out.println(x.get(0));
 	    System.out.println(x.contains("first"));
 	    System.out.println(x.contains("x"));
-		
 	}
 	
 	

@@ -2,22 +2,22 @@ package lab2;
 import java.util.*;
 
 public class ArrayList<T> implements List<T> {
-
+    
     public static final int CAPACITY = 10;
-
+    
     private Object[] data = new Object[CAPACITY];
     private int size = 0;
-
+    
     @Override
     public int size() {
         return size;
     }
-
+    
     @Override
     public boolean isEmpty() {
         return size == 0;
     }
-
+    
     @Override
     public boolean contains(Object o) {
         for (int i = 0; i < size; i++) {
@@ -31,17 +31,17 @@ public class ArrayList<T> implements List<T> {
         }
         return false;
     }
-
+    
     @Override
     public Iterator<T> iterator() {
-        return null;
+        return new Itr();
     }
-
+    
     @Override
     public Object[] toArray() {
         return Arrays.copyOf(data, size);
     }
-
+    
     @Override
     @SuppressWarnings("unchecked")
     public <T1> T1[] toArray(T1[] a) {
@@ -52,7 +52,7 @@ public class ArrayList<T> implements List<T> {
             a[size] = null;
         return a;
     }
-
+    
     @Override
     public boolean add(T t) {
         if (size == data.length) {
@@ -62,7 +62,7 @@ public class ArrayList<T> implements List<T> {
         data[size++] = t;
         return false;
     }
-
+    
     @Override
     public boolean remove(Object o) {
         for (int i = 0; i < size; i++) {
@@ -73,7 +73,7 @@ public class ArrayList<T> implements List<T> {
         }
         return false;
     }
-
+    
     @Override
     public boolean containsAll(Collection<?> c) {
         for (Object e : c)
@@ -81,18 +81,18 @@ public class ArrayList<T> implements List<T> {
                 return false;
         return true;
     }
-
+    
     @Override
     public boolean addAll(Collection<? extends T> c) {
         c.forEach(this::add);
         return true;
     }
-
+    
     @Override
     public boolean addAll(int index, Collection<? extends T> c) {
         return false;
     }
-
+    
     @Override
     public boolean removeAll(Collection<?> c) {
         int i;
@@ -102,25 +102,25 @@ public class ArrayList<T> implements List<T> {
                 break;
         if (i == size)
             return false;
-
+        
         for (j = i++; i < size; i++)
             if (!c.contains(data[i]))
                 data[j++] = data[i];
         size -= i - j;
         return true;
     }
-
+    
     @Override
     public boolean retainAll(Collection<?> c) {
         return false;
     }
-
+    
     @Override
     public void clear() {
         data = new Object[CAPACITY];
         size = 0;
     }
-
+    
     @Override
     public T get(int index) {
         if (index < 0 || index >= size) {
@@ -128,7 +128,7 @@ public class ArrayList<T> implements List<T> {
         }
         return (T) data[index];
     }
-
+    
     @Override
     @SuppressWarnings("unchecked")
     public T set(int index, T element) {
@@ -136,18 +136,18 @@ public class ArrayList<T> implements List<T> {
         data[index] = element;
         return old;
     }
-
+    
     @Override
     public void add(int index, T element) {
         if (size == data.length) {
             shrink();
         }
         System.arraycopy(data, index,data, index + 1,
-                size - index);
+                         size - index);
         data[index] = element;
         size++;
     }
-
+    
     @Override
     @SuppressWarnings("unchecked")
     public T remove(int index) {
@@ -157,7 +157,7 @@ public class ArrayList<T> implements List<T> {
         size--;
         return value;
     }
-
+    
     @Override
     public int indexOf(Object o) {
         for (int i = 0; i < size; i++)
@@ -165,27 +165,27 @@ public class ArrayList<T> implements List<T> {
                 return i;
         return -1;
     }
-
+    
     @Override
     public int lastIndexOf(Object o) {
         return 0;
     }
-
+    
     @Override
     public ListIterator<T> listIterator() {
         return null;
     }
-
+    
     @Override
     public ListIterator<T> listIterator(int index) {
         return null;
     }
-
+    
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
         return null;
     }
-
+    
     private void shrink() {
         if ((data.length / size) >= 4) {
             if (data.length / 4 < CAPACITY)
@@ -194,24 +194,46 @@ public class ArrayList<T> implements List<T> {
                 changeCapacity(data.length / 4);
         }
     }
-
+    
     private void changeCapacity(int newCapacity) {
         data = Arrays.copyOf(data, newCapacity);
     }
-
+    
     private void checkBounds(int index) {
         if (index < 0 || index >= size)
             throw new IndexOutOfBoundsException();
     }
     
-    public String toString() { 
-    	StringBuilder sb = new StringBuilder("["); 
-    	
-    	
-    	for (int i = 0; i < size - 1; i++) { 
-    	sb.append(data[i].toString() + ", "); 
-    	} 
-    	return sb.append(data[size-1] + "]").toString(); 
-    	}
+    private class Itr implements Iterator<T> {
+        int cursor;       // index of next element to return
+        int lastRet = -1; // index of last element returned; -1 if no such
+        //   int expectedModCount = modCount;
+        
+        public boolean hasNext() {
+            return cursor != size;
+        }
+        
+        @SuppressWarnings("unchecked")
+        public T next() {
+            //    checkForComodification();
+            int i = cursor;
+            if (i >= size)
+                throw new NoSuchElementException();
+            Object[] elementData = ArrayList.this.data;
+            if (i >= elementData.length)
+                throw new ConcurrentModificationException();
+            cursor = i + 1;
+            return (T) elementData[lastRet = i];
+        }
+    }
+    
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[");
+        
+        
+        for (int i = 0; i < size - 1; i++) {
+            sb.append(data[i].toString() + ", "); 
+        } 
+        return sb.append(data[size-1] + "]").toString(); 
+    }
 }
-
