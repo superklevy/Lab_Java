@@ -205,9 +205,8 @@ public class ArrayList<T> implements List<T> {
     }
     
     private class Itr implements Iterator<T> {
-        int cursor;       // index of next element to return
-        int lastRet = -1; // index of last element returned; -1 if no such
-        //   int expectedModCount = modCount;
+        int cursor;
+        int lastRet = -1;
         
         public boolean hasNext() {
             return cursor != size;
@@ -215,7 +214,6 @@ public class ArrayList<T> implements List<T> {
         
         @SuppressWarnings("unchecked")
         public T next() {
-            //    checkForComodification();
             int i = cursor;
             if (i >= size)
                 throw new NoSuchElementException();
