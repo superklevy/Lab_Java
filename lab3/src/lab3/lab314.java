@@ -2,8 +2,9 @@ package lab3;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class lab314 {
+public class Lab314 {
 
 	static final int PLACES = 10;
 	 static In in = new In();
@@ -12,7 +13,6 @@ public class lab314 {
 		int i = 1;
 		int wait = 0;
 		
-
 		public int getI() {
 			return i;
 		}
@@ -31,9 +31,9 @@ public class lab314 {
 	}
 
 	static class Out implements Runnable {
-
-		int people = 100;
-
+		
+		int people = ThreadLocalRandom.current().nextInt(1, 50 + 1);
+		
 		@Override
 		public void run() {
 			while (!Thread.currentThread().isInterrupted()) {
@@ -45,21 +45,29 @@ public class lab314 {
 					people -= 1;
 					in.setWait(in.getWait() + 1);
 					if (PLACES == in.getWait()) {
-						System.err.println("Тележка " + in.getI() + " ушла");
+						System.out.println("Тележка №" + in.getI() + " ушла");
 						in.setI(in.getI() + 1);
 						in.setWait(0);
+						try {
+						Thread.sleep(100);
+						} catch (InterruptedException e) {
+						e.printStackTrace();
+						}
 					}
 				}
 			}
 		}
-
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		
-		Out x = new Out();
-		
-		x.run();
-		
+		List<Thread> t = new LinkedList<>();
+		List<Out> b = new LinkedList<>();
+		for (int i = 0; i < 10; i++) {
+			Out b1 = new Out();
+			Thread t1 = new Thread(b1);
+			t1.start();
+			t.add(t1);
+			b.add(b1);
+		}
 	}
 }
