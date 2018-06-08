@@ -53,7 +53,7 @@ class Passenger implements Runnable {
     this.passengerMon = monitorIn;
   }
   public void run() {
-    for(int i=0; i<1; i++){ // Каждый пассажир ездит всего на одну поездку.
+    for(int i=0; i<1; i++){ 
       try{
         Thread.sleep((int)( Math.random()*2000));
       }catch(InterruptedException e){
@@ -83,19 +83,19 @@ class Car implements Runnable {
 } 
 
 class Monitor {
-  private int i, line_length; // Количество пассажиров, ожидающих посадки
+  private int i, line_length; 
   private int seats_available = 0;
   boolean coaster_loading_passengers = false;
   boolean passengers_riding = true;
 
-  private Object notifyPassenger = new Object(); // ввод / выход протокола обеспечивает взаимное исключение.
+  private Object notifyPassenger = new Object(); 
   private Object notifyCar = new Object(); 
 
   public void tryToGetOnCar(int i) {
     synchronized (notifyPassenger) {
       while (!seatAvailable()) {
         try {
-          notifyPassenger.wait(); // Сообщите пассажиру, чтобы он подождал
+          notifyPassenger.wait();
           } catch (InterruptedException e){}
       }
     }
@@ -104,7 +104,7 @@ class Monitor {
   }
 
   private synchronized boolean seatAvailable() {
-    // Проверьте, доступно ли место для пассажира, который пытается попасть.
+   
     if ((seats_available > 0)
         && (seats_available <= RollerCoaster.SEAT_AVAIL)
         && (!passengers_riding)) {
@@ -126,20 +126,17 @@ class Monitor {
   }
 
   private synchronized boolean carIsRunning() {
-    // Проверьте, работает ли автомобиль
+    
     if (seats_available == 0) {
-      // Если нет места, автомобиль начинает работать и сбрасывает параметры.
       seats_available = RollerCoaster.SEAT_AVAIL;
-      // Сбросить доступность места для следующей поездки
-      coaster_loading_passengers = true; // Индикатор автомобиля работает.
-      passengers_riding = true; //пассажиры едут в машине.
+      coaster_loading_passengers = true; 
+      passengers_riding = true; 
       return true;
     } else return false;
   }
 
   public void passengerGetOff(int i) {
     synchronized (this) {
-      // Параметры сброса
       passengers_riding = false;
       coaster_loading_passengers = false;
     }
