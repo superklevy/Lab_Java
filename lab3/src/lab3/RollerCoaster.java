@@ -1,9 +1,9 @@
 import java.math.*;
 
 class RollerCoaster {
-  public static int PASSENGER_NUM = 25;
+  public static int PASSENGER_NUM = 50;
   public static int CAR_NUM = 1; 
-  public static int SEAT_AVAIL = 4; 
+  public static int SEAT_AVAIL = 10; 
   public static void main(String[] args) {
     Monitor rcMon = new Monitor();
 
